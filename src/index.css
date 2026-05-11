@@ -1,1 +1,78 @@
 @import "tailwindcss";
+
+/* Brand tokens (Medsteps) */
+:root {
+  --ms-primary: #1d3587;
+  --ms-primary-2: #102a78;
+  --ms-ink: #0b1226;
+  --ms-muted: #5b647a;
+  --ms-border: rgba(29, 53, 135, 0.14);
+  --ms-surface: #ffffff;
+  --ms-surface-2: #f6f8ff;
+}
+
+@layer base {
+  html {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+      Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--ms-ink);
+    background: var(--ms-surface);
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(29, 53, 135, 0.18);
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+@layer components {
+  .ms-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6;
+  }
+
+  .ms-card {
+    @apply rounded-2xl border bg-white shadow-sm;
+    border-color: var(--ms-border);
+  }
+
+  .ms-input {
+    @apply mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-sm outline-none transition;
+    border-color: rgba(29, 53, 135, 0.18);
+  }
+
+  .ms-input:focus {
+    border-color: rgba(29, 53, 135, 0.55);
+    box-shadow: 0 0 0 4px rgba(29, 53, 135, 0.12);
+  }
+
+  .ms-btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition focus-visible:outline-none;
+  }
+
+  .ms-btn-primary {
+    background: var(--ms-primary);
+    color: white;
+    box-shadow: 0 12px 26px rgba(29, 53, 135, 0.22);
+  }
+
+  .ms-btn-primary:hover {
+    background: var(--ms-primary-2);
+  }
+
+  .ms-btn-secondary {
+    @apply border bg-white;
+    border-color: rgba(29, 53, 135, 0.18);
+    color: var(--ms-primary);
+  }
+
+  .ms-btn-secondary:hover {
+    background: rgba(29, 53, 135, 0.04);
+  }
+}
