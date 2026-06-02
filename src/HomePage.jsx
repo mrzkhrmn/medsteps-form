@@ -17,6 +17,34 @@ import {
   useGetServicesByUserQuery,
 } from "./features/services/servicesApi";
 
+const SOURCE_PLATFORM = {
+  None: 0,
+  X: 1,
+  Instagram: 2,
+  Facebook: 3,
+  WhatsApp: 4,
+  TikTok: 5,
+  YouTube: 6,
+  LinkedIn: 7,
+  Telegram: 8,
+  Website: 9,
+  Other: 99,
+};
+
+const SOURCE_PLATFORM_OPTIONS = [
+  { value: SOURCE_PLATFORM.None, label: "Belirtmek istemiyorum" },
+  { value: SOURCE_PLATFORM.X, label: "X" },
+  { value: SOURCE_PLATFORM.Instagram, label: "Instagram" },
+  { value: SOURCE_PLATFORM.Facebook, label: "Facebook" },
+  { value: SOURCE_PLATFORM.WhatsApp, label: "WhatsApp" },
+  { value: SOURCE_PLATFORM.TikTok, label: "TikTok" },
+  { value: SOURCE_PLATFORM.YouTube, label: "YouTube" },
+  { value: SOURCE_PLATFORM.LinkedIn, label: "LinkedIn" },
+  { value: SOURCE_PLATFORM.Telegram, label: "Telegram" },
+  { value: SOURCE_PLATFORM.Website, label: "Web sitesi" },
+  { value: SOURCE_PLATFORM.Other, label: "Diğer" },
+];
+
 function pickTranslationName(translations, preferredCode) {
   if (!Array.isArray(translations) || translations.length === 0) return "";
   if (preferredCode) {
@@ -176,6 +204,8 @@ export default function HomePage() {
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
   const [languageCode, setLanguageCode] = useState("");
+  const [sourcePlatform, setSourcePlatform] = useState("");
+  const [otherSourcePlatform, setOtherSourcePlatform] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [createCustomerRequest, { isLoading, error }] =
@@ -208,6 +238,16 @@ export default function HomePage() {
       return;
     }
 
+    const sourcePlatformValue =
+      sourcePlatform === ""
+        ? SOURCE_PLATFORM.None
+        : Number.parseInt(String(sourcePlatform), 10);
+
+    if (sourcePlatformValue === SOURCE_PLATFORM.Other && !otherSourcePlatform.trim()) {
+      alert("Lütfen diğer kaynak platformu belirtin.");
+      return;
+    }
+
     const body = {
       firstName,
       lastName,
@@ -225,6 +265,11 @@ export default function HomePage() {
       message,
       languageCode,
       serviceIds: selectedServiceIds,
+      sourcePlatform: sourcePlatformValue,
+      otherSourcePlatform:
+        sourcePlatformValue === SOURCE_PLATFORM.Other
+          ? otherSourcePlatform.trim()
+          : "",
     };
 
     try {
@@ -240,6 +285,8 @@ export default function HomePage() {
       setGender("");
       setAge("");
       setLanguageCode("");
+      setSourcePlatform("");
+      setOtherSourcePlatform("");
       setAcceptTerms(false);
     } catch {
       // Hata mesajı aşağıda gösteriliyor
@@ -744,6 +791,47 @@ export default function HomePage() {
                         autoComplete="tel"
                       />
                     </label>
+
+                    <label className="block text-xs font-semibold text-(--ms-ink) sm:col-span-2">
+                      Bizi nereden duydunuz?
+                      <select
+                        className="ms-input"
+                        value={sourcePlatform}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setSourcePlatform(v);
+                          if (
+                            Number.parseInt(v, 10) !== SOURCE_PLATFORM.Other
+                          ) {
+                            setOtherSourcePlatform("");
+                          }
+                        }}
+                      >
+                        <option value="">Kaynak seçin</option>
+                        {SOURCE_PLATFORM_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    {Number.parseInt(sourcePlatform, 10) ===
+                      SOURCE_PLATFORM.Other && (
+                      <label className="block text-xs font-semibold text-(--ms-ink) sm:col-span-2">
+                        Diğer kaynak
+                        <input
+                          className="ms-input"
+                          type="text"
+                          value={otherSourcePlatform}
+                          onChange={(e) =>
+                            setOtherSourcePlatform(e.target.value)
+                          }
+                          placeholder="Lütfen belirtin"
+                          required
+                        />
+                      </label>
+                    )}
                   </div>
 
                   <label className="mt-4 block text-xs font-semibold text-(--ms-ink)">
